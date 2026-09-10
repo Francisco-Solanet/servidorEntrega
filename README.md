@@ -1,4 +1,3 @@
-# servidorEntrega
 # Servidor de Vehículos
 
 Proyecto realizado en Go utilizando PostgreSQL y sqlc.
@@ -29,8 +28,7 @@ servidorEntrega/
 ├── docker-compose.yml
 ├── Makefile
 ├── main.go
-├── Static/
-    ├──index.html
+├── index.html
 ├── go.mod
 └── go.sum
 ```
@@ -71,7 +69,9 @@ cd servidorEntrega
 
 Luego ejecutar:
 
+```bash
 make test
+```
 
 El comando `make test` realiza automáticamente las siguientes tareas:
 
@@ -103,5 +103,6 @@ go run main.go
 
 Por defecto queda disponible en:
 
+```text
 http://localhost:8080
-
+```
