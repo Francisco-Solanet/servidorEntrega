@@ -2,91 +2,87 @@
 
 ## Descripción
 
-En esta entrega se desarrolla una API REST para gestionar vehículos, conectando el servidor web con la capa de acceso a datos generada mediante sqlc y una base de datos PostgreSQL.
+En esta entrega se desarrolla una API REST para gestionar vehículos. El servidor web se conecta a una base de datos PostgreSQL y utiliza `sqlc` para ejecutar las consultas SQL.
 
-La API permite realizar operaciones CRUD: crear, consultar, actualizar y eliminar vehículos.
+La API permite crear, listar, consultar, actualizar y eliminar vehículos.
 
 ## Tecnologías utilizadas
 
 - Go
 - PostgreSQL
 - sqlc
-- Docker y Docker Compose
+- Docker Compose
 - Hurl para las pruebas HTTP
 
 ## Estructura del proyecto
 
-- `main.go`: servidor HTTP y handlers de la API REST.
+- `main.go`: servidor HTTP y handlers de la API.
 - `db/`: código generado por sqlc para acceder a la base de datos.
-- `schema.sql`: definición de la tabla de vehículos.
+- `schema.sql`: definición de la estructura de la base de datos.
 - `queries.sql`: consultas SQL utilizadas por sqlc.
-- `sqlc.yaml`: configuración de generación de código.
+- `sqlc.yaml`: configuración de sqlc.
 - `db_test.go`: pruebas de la capa de acceso a datos.
-- `requests.hurl`: ejemplos de solicitudes HTTP.
+- `requests.hurl`: solicitudes HTTP de ejemplo.
 - `test.hurl`: pruebas de la API.
 - `docker-compose.yml`: configuración de los servicios.
-- `Makefile`: comandos para facilitar tareas de ejecución y pruebas.
+- `Makefile`: comandos para ejecutar tareas del proyecto.
 - `go.mod` y `go.sum`: dependencias del proyecto.
-- `Static/index.html`: página web estática, si se mantiene en esta entrega.
+- `Static/index.html`: página web estática, si se utiliza en esta entrega.
 
 ## Entidad: Vehículo
 
-Cada vehículo se representa mediante los siguientes atributos:
+Los vehículos contienen los siguientes atributos:
 
-- `id`: identificador.
+- `id`: identificador del vehículo.
 - `marca`: marca del vehículo.
 - `modelo`: modelo del vehículo.
 - `anio`: año de fabricación.
 - `precio_venta`: precio de venta.
 - `kilometraje`: kilometraje registrado.
 
-## Endpoints
+## Endpoints de la API
 
-La API permite realizar las siguientes operaciones:
-
-| Método | Ruta | Operación |
+| Método HTTP | Ruta | Descripción |
 |---|---|---|
-| POST | `/vehiculos` | Crear un vehículo |
-| GET | `/vehiculos` | Listar vehículos |
-| GET | `/vehiculos/{id}` | Obtener un vehículo por ID |
-| PUT | `/vehiculos/{id}` | Actualizar un vehículo |
-| DELETE | `/vehiculos/{id}` | Eliminar un vehículo |
+| POST | `/vehiculos` | Crea un vehículo. |
+| GET | `/vehiculos` | Lista todos los vehículos. |
+| GET | `/vehiculos/{id}` | Obtiene un vehículo por su ID. |
+| PUT | `/vehiculos/{id}` | Actualiza un vehículo existente. |
+| DELETE | `/vehiculos/{id}` | Elimina un vehículo. |
 
-Las respuestas y los códigos HTTP dependen de cada operación y de sus resultados.
+## Validaciones y respuestas
+
+- Se devuelve `400 Bad Request` cuando el JSON es inválido, el ID no es válido o faltan la marca o el modelo.
+- Se devuelve `404 Not Found` cuando el vehículo solicitado no existe en las operaciones de consulta o actualización.
+- Se devuelve `405 Method Not Allowed` cuando se utiliza un método HTTP no permitido para la ruta.
+- Se devuelve `500 Internal Server Error` ante errores internos de la base de datos.
+- Se devuelve `201 Created` al crear un vehículo correctamente.
+- Se devuelve `204 No Content` al eliminar un vehículo correctamente.
 
 ## Ejecución
 
-Se utiliza Docker Compose para facilitar la ejecución de los servicios necesarios.
+1. Iniciar los servicios configurados en Docker Compose:
 
-Desde la raíz del proyecto, iniciar los servicios con:
+   ```bash
+   docker compose up -d
+   ```
 
-```bash
-docker compose up -d
-```
+2. Ejecutar el servidor:
 
-Luego, ejecutar el servidor Go:
+   ```bash
+   go run main.go
+   ```
 
-```bash
-go run main.go
-```
-
-El servidor atiende solicitudes en el puerto `8080`, según la configuración de la aplicación.
+3. Acceder a la API en `http://localhost:8080`.
 
 ## Pruebas
 
-Los archivos `requests.hurl` y `test.hurl` contienen ejemplos de solicitudes y pruebas HTTP para verificar el funcionamiento de la API.
-
-Para ejecutar un archivo Hurl:
+Las pruebas HTTP se pueden ejecutar con Hurl:
 
 ```bash
 hurl --test requests.hurl
-```
-
-También se puede ejecutar:
-
-```bash
 hurl --test test.hurl
 ```
 
-Las pruebas deben ejecutarse con la base de datos disponible y el servidor iniciado, cuando los archivos estén configurados para interactuar con el servidor en ejecución.
+La ejecución requiere que la base de datos esté disponible y que los servicios necesarios estén iniciados.
 
