@@ -1,4 +1,4 @@
-.PHONY: test sqlc clean up
+.PHONY: test test-api sqlc clean up
 
 test:
 	$(MAKE) clean
@@ -7,6 +7,9 @@ test:
 	@echo "Esperando a PostgreSQL..."
 	@until docker compose exec -T postgres pg_isready -U postgres -d vehiculos > /dev/null 2>&1; do sleep 1; done
 	@go test ./...; resultado=$$?; $(MAKE) clean; exit $$resultado
+
+test-api:
+	bash ./test-api.sh
 
 sqlc:
 	sqlc generate

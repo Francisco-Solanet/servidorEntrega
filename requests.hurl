@@ -18,11 +18,19 @@ Content-Type: application/json
 HTTP 201
 [Captures]
 id: jsonpath "$.ID"
+[Asserts]
+jsonpath "$.Marca" == "Ford"
+jsonpath "$.Modelo" == "Focus"
+jsonpath "$.Anio" == 2019
 
 
 # 3. Obtener vehículo creado
 GET http://localhost:8080/vehiculos/{{id}}
 HTTP 200
+[Asserts]
+jsonpath "$.Marca" == "Ford"
+jsonpath "$.Modelo" == "Focus"
+jsonpath "$.Anio" == 2019
 
 
 # 4. Actualizar vehículo
@@ -38,11 +46,19 @@ Content-Type: application/json
 }
 
 HTTP 200
+[Asserts]
+jsonpath "$.Modelo" == "Focus Titanium"
+jsonpath "$.Anio" == 2020
+jsonpath "$.Kilometraje" == 60000
 
 
 # 5. Verificar actualización
 GET http://localhost:8080/vehiculos/{{id}}
 HTTP 200
+[Asserts]
+jsonpath "$.Modelo" == "Focus Titanium"
+jsonpath "$.Anio" == 2020
+jsonpath "$.Kilometraje" == 60000
 
 
 # 6. Eliminar vehículo
@@ -55,7 +71,7 @@ GET http://localhost:8080/vehiculos/{{id}}
 HTTP 404
 
 
-# 8. Probar validación
+# 8. Probar validación de marca vacía
 POST http://localhost:8080/vehiculos
 Content-Type: application/json
 
