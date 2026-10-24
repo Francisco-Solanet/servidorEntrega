@@ -1,7 +1,6 @@
 package main
 
 import (
-	"context"
 	"database/sql"
 	"log"
 	"net/http"
@@ -38,6 +37,7 @@ func main() {
 
 	http.HandleFunc("/", handler.indexHandler)
 	http.HandleFunc("/vehiculos", handler.vehiculosHandler)
+	http.HandleFunc("/vehiculos/", handler.vehiculoIDHandler)
 
 	log.Println("Servidor iniciado en http://localhost:8080")
 	log.Fatal(http.ListenAndServe(":8080", nil))
@@ -68,7 +68,7 @@ func (h *Handler) indexHandler(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
-// POST /vehiculos procesa el formulario y vuelve a la página principal.
+// POST /vehiculos crea un vehículo y devuelve la lista actualizada.
 func (h *Handler) vehiculosHandler(w http.ResponseWriter, r *http.Request) {
 	if r.Method != http.MethodPost {
 		http.Error(w, "Método no permitido", http.StatusMethodNotAllowed)
@@ -97,7 +97,7 @@ func (h *Handler) vehiculosHandler(w http.ResponseWriter, r *http.Request) {
 	}
 
 	_, err := h.queries.CreateVehiculo(
-		context.Background(),
+		r.Context(),
 		db.CreateVehiculoParams{
 			Marca:       marca,
 			Modelo:      modelo,
@@ -112,5 +112,39 @@ func (h *Handler) vehiculosHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	http.Redirect(w, r, "/", http.StatusSeeOther)
+	vehiculos, err := h.queries.ListVehiculos(r.Context())
+	if err != nil {
+		http.Error(w, "Error al obtener los vehículos", http.StatusInternalServerError)
+		return
+	}
+
+	w.Header().Set("Content-Type", "text/html; charset=utf-8")
+
+	if err := views.EntityList(vehiculos).Render(r.Context(), w); err != nil {
+		log.Println("Error al renderizar la lista:", err)
+	}
+}
+
+// DELETE /vehiculos/{id} elimina un vehículo.
+func (h *Handler) vehiculoIDHandler(w http.ResponseWriter, r *http.Request) {
+	if r.Method != http.MethodDelete {
+		http.Error(w, "Método no permitido", http.StatusMethodNotAllowed)
+		return
+	}
+
+	idTexto := strings.TrimPrefix(r.URL.Path, "/vehiculos/")
+	id, err := strconv.ParseInt(idTexto, 10, 32)
+	if err != nil || id <= 0 {
+		http.Error(w, "ID de vehículo inválido", http.StatusBadRequest)
+		return
+	}
+
+	err = h.queries.DeleteVehiculo(r.Context(), int32(id))
+	if err != nil {
+		log.Println("Error al eliminar el vehículo:", err)
+		http.Error(w, "Error al eliminar el vehículo", http.StatusInternalServerError)
+		return
+	}
+
+	w.WriteHeader(http.StatusOK)
 }

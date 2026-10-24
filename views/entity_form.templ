@@ -3,7 +3,7 @@ package views
 templ EntityForm() {
 	<section>
 		<h2>Agregar vehículo</h2>
-		<form action="/vehiculos" method="POST">
+		<form hx-post="/vehiculos" hx-target="#entity-list" hx-swap="outerHTML">
 			<label>
 				Marca
 				<input type="text" name="marca" required maxlength="50"/>

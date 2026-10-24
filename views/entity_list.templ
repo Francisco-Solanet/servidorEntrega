@@ -4,7 +4,7 @@ import "ejercicioEntrega.com/servidorEntrega/db"
 import "fmt"
 
 templ EntityList(vehiculos []db.Vehiculo) {
-	<section>
+	<section id="entity-list">
 		<h2>Vehículos registrados</h2>
 		if len(vehiculos) == 0 {
 			<p>Todavía no hay vehículos registrados.</p>
@@ -17,6 +17,7 @@ templ EntityList(vehiculos []db.Vehiculo) {
 						<th>Año</th>
 						<th>Precio</th>
 						<th>Kilometraje</th>
+						<th>Acciones</th>
 					</tr>
 				</thead>
 				<tbody>
@@ -27,6 +28,17 @@ templ EntityList(vehiculos []db.Vehiculo) {
 							<td>{ fmt.Sprint(vehiculo.Anio) }</td>
 							<td>$ { vehiculo.PrecioVenta }</td>
 							<td>{ fmt.Sprint(vehiculo.Kilometraje) } km</td>
+							<td>
+								<button
+									type="button"
+									hx-delete={ fmt.Sprintf("/vehiculos/%d", vehiculo.ID) }
+									hx-target="closest tr"
+									hx-swap="outerHTML"
+									hx-confirm="¿Estás seguro de que querés borrar este vehículo?"
+								>
+									Borrar
+								</button>
+							</td>
 						</tr>
 					}
 				</tbody>
