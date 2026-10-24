@@ -1,0 +1,36 @@
+package views
+
+import "ejercicioEntrega.com/servidorEntrega/db"
+import "fmt"
+
+templ EntityList(vehiculos []db.Vehiculo) {
+	<section>
+		<h2>Vehículos registrados</h2>
+		if len(vehiculos) == 0 {
+			<p>Todavía no hay vehículos registrados.</p>
+		} else {
+			<table>
+				<thead>
+					<tr>
+						<th>Marca</th>
+						<th>Modelo</th>
+						<th>Año</th>
+						<th>Precio</th>
+						<th>Kilometraje</th>
+					</tr>
+				</thead>
+				<tbody>
+					for _, vehiculo := range vehiculos {
+						<tr>
+							<td>{ vehiculo.Marca }</td>
+							<td>{ vehiculo.Modelo }</td>
+							<td>{ fmt.Sprint(vehiculo.Anio) }</td>
+							<td>$ { vehiculo.PrecioVenta }</td>
+							<td>{ fmt.Sprint(vehiculo.Kilometraje) } km</td>
+						</tr>
+					}
+				</tbody>
+			</table>
+		}
+	</section>
+}

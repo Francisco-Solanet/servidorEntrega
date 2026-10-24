@@ -1,0 +1,15 @@
+package views
+
+import "ejercicioEntrega.com/servidorEntrega/db"
+
+templ IndexContent(vehiculos []db.Vehiculo) {
+	<h1>Gestor de vehículos</h1>
+	<p>Administración de vehículos registrados.</p>
+	@EntityForm()
+	<hr/>
+	@EntityList(vehiculos)
+}
+
+templ IndexPage(vehiculos []db.Vehiculo) {
+	@Layout("Gestor de vehículos", IndexContent(vehiculos))
+}
