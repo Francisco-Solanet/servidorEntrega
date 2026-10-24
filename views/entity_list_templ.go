@@ -32,7 +32,7 @@ func EntityList(vehiculos []db.Vehiculo) templ.Component {
 			templ_7745c5c3_Var1 = templ.NopComponent
 		}
 		ctx = templ.ClearChildren(ctx)
-		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<section><h2>Vehículos registrados</h2>")
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<section id=\"entity-list\"><h2>Vehículos registrados</h2>")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
@@ -42,7 +42,7 @@ func EntityList(vehiculos []db.Vehiculo) templ.Component {
 				return templ_7745c5c3_Err
 			}
 		} else {
-			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<table><thead><tr><th>Marca</th><th>Modelo</th><th>Año</th><th>Precio</th><th>Kilometraje</th></tr></thead> <tbody>")
+			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<table><thead><tr><th>Marca</th><th>Modelo</th><th>Año</th><th>Precio</th><th>Kilometraje</th><th>Acciones</th></tr></thead> <tbody>")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
@@ -54,7 +54,7 @@ func EntityList(vehiculos []db.Vehiculo) templ.Component {
 				var templ_7745c5c3_Var2 string
 				templ_7745c5c3_Var2, templ_7745c5c3_Err = templ.JoinStringErrs(vehiculo.Marca)
 				if templ_7745c5c3_Err != nil {
-					return templ.Error{Err: templ_7745c5c3_Err, FileName: `views/entity_list.templ`, Line: 25, Col: 27}
+					return templ.Error{Err: templ_7745c5c3_Err, FileName: `views/entity_list.templ`, Line: 26, Col: 27}
 				}
 				_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var2))
 				if templ_7745c5c3_Err != nil {
@@ -67,7 +67,7 @@ func EntityList(vehiculos []db.Vehiculo) templ.Component {
 				var templ_7745c5c3_Var3 string
 				templ_7745c5c3_Var3, templ_7745c5c3_Err = templ.JoinStringErrs(vehiculo.Modelo)
 				if templ_7745c5c3_Err != nil {
-					return templ.Error{Err: templ_7745c5c3_Err, FileName: `views/entity_list.templ`, Line: 26, Col: 28}
+					return templ.Error{Err: templ_7745c5c3_Err, FileName: `views/entity_list.templ`, Line: 27, Col: 28}
 				}
 				_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var3))
 				if templ_7745c5c3_Err != nil {
@@ -80,7 +80,7 @@ func EntityList(vehiculos []db.Vehiculo) templ.Component {
 				var templ_7745c5c3_Var4 string
 				templ_7745c5c3_Var4, templ_7745c5c3_Err = templ.JoinStringErrs(fmt.Sprint(vehiculo.Anio))
 				if templ_7745c5c3_Err != nil {
-					return templ.Error{Err: templ_7745c5c3_Err, FileName: `views/entity_list.templ`, Line: 27, Col: 38}
+					return templ.Error{Err: templ_7745c5c3_Err, FileName: `views/entity_list.templ`, Line: 28, Col: 38}
 				}
 				_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var4))
 				if templ_7745c5c3_Err != nil {
@@ -93,7 +93,7 @@ func EntityList(vehiculos []db.Vehiculo) templ.Component {
 				var templ_7745c5c3_Var5 string
 				templ_7745c5c3_Var5, templ_7745c5c3_Err = templ.JoinStringErrs(vehiculo.PrecioVenta)
 				if templ_7745c5c3_Err != nil {
-					return templ.Error{Err: templ_7745c5c3_Err, FileName: `views/entity_list.templ`, Line: 28, Col: 35}
+					return templ.Error{Err: templ_7745c5c3_Err, FileName: `views/entity_list.templ`, Line: 29, Col: 35}
 				}
 				_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var5))
 				if templ_7745c5c3_Err != nil {
@@ -106,13 +106,26 @@ func EntityList(vehiculos []db.Vehiculo) templ.Component {
 				var templ_7745c5c3_Var6 string
 				templ_7745c5c3_Var6, templ_7745c5c3_Err = templ.JoinStringErrs(fmt.Sprint(vehiculo.Kilometraje))
 				if templ_7745c5c3_Err != nil {
-					return templ.Error{Err: templ_7745c5c3_Err, FileName: `views/entity_list.templ`, Line: 29, Col: 45}
+					return templ.Error{Err: templ_7745c5c3_Err, FileName: `views/entity_list.templ`, Line: 30, Col: 45}
 				}
 				_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var6))
 				if templ_7745c5c3_Err != nil {
 					return templ_7745c5c3_Err
 				}
-				_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(" km</td></tr>")
+				_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(" km</td><td><button type=\"button\" hx-delete=\"")
+				if templ_7745c5c3_Err != nil {
+					return templ_7745c5c3_Err
+				}
+				var templ_7745c5c3_Var7 string
+				templ_7745c5c3_Var7, templ_7745c5c3_Err = templ.JoinStringErrs(fmt.Sprintf("/vehiculos/%d", vehiculo.ID))
+				if templ_7745c5c3_Err != nil {
+					return templ.Error{Err: templ_7745c5c3_Err, FileName: `views/entity_list.templ`, Line: 34, Col: 62}
+				}
+				_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var7))
+				if templ_7745c5c3_Err != nil {
+					return templ_7745c5c3_Err
+				}
+				_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("\" hx-target=\"closest tr\" hx-swap=\"outerHTML\" hx-confirm=\"¿Estás seguro de que querés borrar este vehículo?\">Borrar</button></td></tr>")
 				if templ_7745c5c3_Err != nil {
 					return templ_7745c5c3_Err
 				}

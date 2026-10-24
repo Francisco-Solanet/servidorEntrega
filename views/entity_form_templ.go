@@ -29,7 +29,7 @@ func EntityForm() templ.Component {
 			templ_7745c5c3_Var1 = templ.NopComponent
 		}
 		ctx = templ.ClearChildren(ctx)
-		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<section><h2>Agregar vehículo</h2><form action=\"/vehiculos\" method=\"POST\"><label>Marca <input type=\"text\" name=\"marca\" required maxlength=\"50\"></label> <label>Modelo <input type=\"text\" name=\"modelo\" required maxlength=\"50\"></label> <label>Año <input type=\"number\" name=\"anio\" required min=\"1900\" max=\"2100\"></label> <label>Precio de venta <input type=\"number\" name=\"precio_venta\" required min=\"0\" step=\"0.01\"></label> <label>Kilometraje <input type=\"number\" name=\"kilometraje\" required min=\"0\"></label> <button type=\"submit\">Guardar vehículo</button></form></section>")
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<section><h2>Agregar vehículo</h2><form hx-post=\"/vehiculos\" hx-target=\"#entity-list\" hx-swap=\"outerHTML\"><label>Marca <input type=\"text\" name=\"marca\" required maxlength=\"50\"></label> <label>Modelo <input type=\"text\" name=\"modelo\" required maxlength=\"50\"></label> <label>Año <input type=\"number\" name=\"anio\" required min=\"1900\" max=\"2100\"></label> <label>Precio de venta <input type=\"number\" name=\"precio_venta\" required min=\"0\" step=\"0.01\"></label> <label>Kilometraje <input type=\"number\" name=\"kilometraje\" required min=\"0\"></label> <button type=\"submit\">Guardar vehículo</button></form></section>")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}

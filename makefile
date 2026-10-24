@@ -1,30 +1,32 @@
 .PHONY: run-app run templ sqlc up test clean
 
-# Prepara el proyecto, ejecuta la aplicación y limpia Docker al finalizar.
+TEMPL_VERSION := v0.2.793
+SQLC_VERSION := v1.31.1
+
+# Genera el código, prepara la base de datos y ejecuta la aplicación.
 run-app:
 	@set -e; \
 	trap 'docker compose down -v --remove-orphans' EXIT; \
 	echo "Generando componentes Templ..."; \
-	~/go/bin/templ generate; \
+	go run github.com/a-h/templ/cmd/templ@$(TEMPL_VERSION) generate; \
 	echo "Generando consultas SQLc..."; \
-	sqlc generate; \
+	go run github.com/sqlc-dev/sqlc/cmd/sqlc@$(SQLC_VERSION) generate; \
 	echo "Limpiando contenedores y volumenes anteriores..."; \
 	docker compose down -v --remove-orphans; \
 	echo "Iniciando PostgreSQL..."; \
 	docker compose up -d; \
-	echo "Esperando a que PostgreSQL este listo..."; \
+	echo "Esperando a PostgreSQL..."; \
 	until docker compose exec -T postgres pg_isready -U postgres -d vehiculos > /dev/null 2>&1; do sleep 1; done; \
 	echo "Iniciando aplicacion..."; \
 	go run .
 
-# Alias para mantener compatibilidad.
 run: run-app
 
 templ:
-	~/go/bin/templ generate
+	go run github.com/a-h/templ/cmd/templ@$(TEMPL_VERSION) generate
 
 sqlc:
-	sqlc generate
+	go run github.com/sqlc-dev/sqlc/cmd/sqlc@$(SQLC_VERSION) generate
 
 up:
 	docker compose up -d
