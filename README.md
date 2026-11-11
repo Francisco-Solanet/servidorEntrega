@@ -28,7 +28,8 @@ La API permite crear, listar, consultar, actualizar y eliminar vehículos. Adem�
 - `test.hurl`: pruebas HTTP adicionales.
 - `test-api.sh`: script de automatización de las pruebas de la API.
 - `docker-compose.yml`: configuración del servicio PostgreSQL.
-- `Makefile`: comandos para automatizar las tareas del proyecto.
+- `makefile`: comandos para automatizar las tareas del proyecto.
+- `.env.example`: ejemplo de configuración de las variables de entorno.
 - `go.mod` y `go.sum`: dependencias del proyecto.
 - `Static/index.html`: página web estática, si se utiliza en esta entrega.
 
@@ -80,26 +81,40 @@ Para ejecutar el proyecto se necesita tener instalados:
 - curl.
 - Make y Bash.
 
+## Configuración del entorno
+
+Antes de ejecutar el proyecto, crear el archivo `.env` a partir del archivo de ejemplo:
+
+```bash
+cp .env.example .env
+```
+
+El archivo `.env` contiene las variables de configuración de PostgreSQL y la URL de conexión utilizada por la aplicación.
+
+Este archivo es local y está excluido del repositorio mediante `.gitignore`. Se debe utilizar `.env.example` como referencia para configurar el entorno.
+
 ## Ejecución automática de las pruebas
 
 Desde la raíz del proyecto, ejecutar:
 
 ```bash
+cp .env.example .env
 make test-api
 ```
 
 Este comando ejecuta el script `test-api.sh`, que realiza las siguientes tareas:
 
-1. Elimina los contenedores y volúmenes anteriores del proyecto.
-2. Genera el código Go a partir de las consultas SQL mediante `sqlc generate`.
-3. Compila la aplicación.
-4. Inicia PostgreSQL mediante Docker Compose.
-5. Espera a que PostgreSQL esté listo para aceptar conexiones.
-6. Inicia la aplicación Go.
-7. Espera a que la API esté disponible.
-8. Ejecuta las pruebas HTTP de `requests.hurl`.
-9. Ejecuta las pruebas HTTP de `test.hurl`.
-10. Detiene la aplicación y elimina los contenedores y volúmenes al finalizar.
+1. Carga las variables de entorno desde `.env`.
+2. Elimina los contenedores y volúmenes anteriores del proyecto.
+3. Genera el código Go a partir de las consultas SQL mediante `sqlc generate`.
+4. Compila la aplicación.
+5. Inicia PostgreSQL mediante Docker Compose.
+6. Espera a que PostgreSQL esté listo para aceptar conexiones.
+7. Inicia la aplicación Go.
+8. Espera a que la API esté disponible.
+9. Ejecuta las pruebas HTTP de `requests.hurl`.
+10. Ejecuta las pruebas HTTP de `test.hurl`.
+11. Detiene la aplicación y elimina los contenedores y volúmenes al finalizar.
 
 No es necesario iniciar PostgreSQL ni el servidor manualmente.
 
@@ -109,36 +124,55 @@ No es necesario iniciar PostgreSQL ni el servidor manualmente.
 
 Si se desea iniciar el entorno manualmente, ejecutar desde la raíz del proyecto:
 
-1. Generar el código de acceso a datos:
+1. Crear el archivo de configuración:
+
+   ```bash
+   cp .env.example .env
+   ```
+
+2. Cargar las variables de entorno para que estén disponibles para Go:
+
+   ```bash
+   set -a
+   source .env
+   set +a
+   ```
+
+3. Generar el código de acceso a datos e iniciar PostgreSQL:
 
    ```bash
    sqlc generate
-   ```
-
-2. Iniciar PostgreSQL:
-
-   ```bash
    docker compose up -d
    ```
 
-3. Esperar a que PostgreSQL esté listo y ejecutar el servidor:
+4. Esperar a que PostgreSQL esté listo:
 
    ```bash
-   go run main.go
+   until docker compose exec -T postgres pg_isready -U "$POSTGRES_USER" -d "$POSTGRES_DB" > /dev/null 2>&1; do
+       sleep 1
+   done
    ```
 
-4. En otra terminal, ejecutar las pruebas HTTP:
+5. Iniciar el servidor:
+
+   ```bash
+   go run .
+   ```
+
+6. En otra terminal, ejecutar las pruebas HTTP:
 
    ```bash
    hurl --test requests.hurl
    hurl --test test.hurl
    ```
 
-5. Al finalizar, detener los contenedores y eliminar los volúmenes:
+7. Al finalizar, detener PostgreSQL:
 
    ```bash
-   docker compose down -v --remove-orphans
+   docker compose down
    ```
+
+Este último comando detiene y elimina el contenedor, pero conserva los datos del volumen. Para eliminar también los datos almacenados, utilizar `docker compose down -v`.
 
 ## Pruebas de la API
 
@@ -160,7 +194,7 @@ La base de datos se llama `vehiculos` y utiliza PostgreSQL. La configuración de
 
 ## Automatización
 
-El proyecto incluye un `Makefile` para centralizar las tareas y un script Bash para ejecutar las pruebas de la API de principio a fin.
+El proyecto incluye un `makefile` para centralizar las tareas y un script Bash para ejecutar las pruebas de la API de principio a fin.
 
 El comando recomendado para verificar la entrega es:
 
