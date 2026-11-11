@@ -9,6 +9,7 @@ import (
 	"net/http"
 	"strconv"
 	"strings"
+	"os"
 
 	_ "github.com/lib/pq"
 
@@ -29,10 +30,12 @@ type VehiculoRequest struct {
 
 func main() {
 	// Conexión con PostgreSQL
-	conn, err := sql.Open(
-		"postgres",
-		"postgres://postgres:postgres@localhost:5432/vehiculos?sslmode=disable",
-	)
+	dbURL := os.Getenv("DATABASE_URL")
+
+	if dbURL == "" {
+   	  log.Fatal("La variable DATABASE_URL no está configurada")
+	}
+	conn, err := sql.Open("postgres", dbURL)
 
 	if err != nil {
 		log.Fatal("Error al abrir la conexión:", err)

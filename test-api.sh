@@ -1,6 +1,22 @@
 #!/usr/bin/env bash
 set -Eeuo pipefail
 
+# Cargar variables de entorno
+if [[ ! -f .env ]]; then
+    echo "ERROR: No existe el archivo .env"
+    echo "Copiar .env.example a .env antes de ejecutar las pruebas"
+    exit 1
+fi
+
+set -a
+source .env
+set +a
+
+if [[ -z "${DATABASE_URL:-}" ]]; then
+    echo "ERROR: DATABASE_URL no está configurada en .env"
+    exit 1
+fi
+
 BIN="./.test-api-bin"
 LOG="./.test-api.log"
 APP_PID=""
