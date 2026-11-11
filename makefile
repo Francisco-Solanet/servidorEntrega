@@ -1,9 +1,19 @@
+
+SHELL := /bin/bash
+
 .PHONY: run-app run templ sqlc up test clean
 
 # Prepara el proyecto, ejecuta la aplicación y limpia Docker al finalizar.
 run-app:
 	@set -e; \
-	trap 'docker compose down -v --remove-orphans' EXIT; \
+	cleanup() { \
+		trap - EXIT INT TERM; \
+		echo "Limpiando contenedores y volumenes..."; \
+		docker compose down -v --remove-orphans; \
+	}; \
+	trap cleanup EXIT; \
+	trap 'exit 130' INT; \
+	trap 'exit 143' TERM; \
 	echo "Generando componentes Templ..."; \
 	~/go/bin/templ generate; \
 	echo "Generando consultas SQLc..."; \
@@ -39,3 +49,4 @@ test:
 
 clean:
 	docker compose down -v --remove-orphans
+
